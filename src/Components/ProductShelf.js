@@ -2,7 +2,7 @@ import React from 'react';
 import 'rbx/index.css';
 import { Container, Title, Content, Button } from 'rbx';
 import ReactDOM from 'react-dom';
-import { cartFuck } from './Cart';
+import { CartRender } from './Cart';
 
 const ProductShelf = ({ products, cartProducts, setCart, display }) => {
     return (
@@ -27,7 +27,7 @@ const ProductCard = ({ product, cartProducts, setCart, display }) => {
         }
 
         setCart(currCart);
-        // cartFuck({ cartProducts, setCart, display });
+        CartRender({ cartProducts, setCart, display });
     }
 
     return (

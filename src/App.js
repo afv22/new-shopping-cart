@@ -26,7 +26,8 @@ const App = () => {
     const [data, setData] = useState({});
     const products = Object.values(data);
     const [cartProducts, setCart] = useState({});
-    const [display, setDisplay] = useState('none');
+    const [cartDisplay, setCartDisplay] = useState('none');
+    const [arrowDirection, setArrowDirection] = useState('<');
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -39,11 +40,21 @@ const App = () => {
 
     return (
         <Container className='page-wrap'>
-            <ProductShelf cartProducts={ cartProducts } setCart={ setCart } products={ products } display={ display }/>
-            <Cart cartProducts={ cartProducts } setCart={ setCart } display={ display } setDisplay={ setDisplay }/>
+            <ProductShelf 
+                cartProducts={ cartProducts } 
+                setCart={ setCart } 
+                products={ products } 
+                display={ cartDisplay }/>
+            
+            <Cart 
+                cartProducts={ cartProducts } 
+                setCart={ setCart } 
+                display={ cartDisplay } 
+                setDisplay={ setCartDisplay }
+                direction={ arrowDirection }
+                setDirection={ setArrowDirection }/>
         </Container>
     );
 };
 
 export default App;
-
