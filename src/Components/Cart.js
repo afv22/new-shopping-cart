@@ -64,8 +64,6 @@ const CartProductWrap = ({
     inventory,
     setInventory }) => {
 
-    console.log(cartProducts)
-
     return (
         <Container>
             {Object.keys(cartProducts).map(product =>

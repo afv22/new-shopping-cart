@@ -3,7 +3,7 @@ import './App.css';
 import firebase from 'firebase/app';
 import 'firebase/database';
 import 'rbx/index.css';
-import { Container } from 'rbx';
+import { Container, Title } from 'rbx';
 import ProductShelf from './Components/ProductShelf';
 import './Components/ProductShelf.css';
 import Cart from './Components/Cart';
@@ -17,10 +17,10 @@ const firebaseConfig = {
     storageBucket: "new-shopping-cart-998c8.appspot.com",
     messagingSenderId: "926357769629",
     appId: "1:926357769629:web:42055e15ab7a4513497374"
-};   
+};
 
 firebase.initializeApp(firebaseConfig);
-// const db = firebase.database().ref();
+const db = firebase.database().ref();
 
 const App = () => {
     const [data, setData] = useState({});
@@ -38,16 +38,15 @@ const App = () => {
         };
         fetchProducts();
 
-        const fetchInventory = async () => {
-            const inventoryResponse = await fetch('./data/inventory.json');
-            const inventoryJson = await inventoryResponse.json();
-            setInventory(inventoryJson);
-        }        
-        fetchInventory();
+        db.once('value').then( snap => {
+            setInventory(snap.val());
+        })
     }, []);
 
     return (
         <Container className='page-wrap'>
+            <br/>
+            <Title size={1}>SK8R BOI STYL</Title>
             <ProductShelf 
                 cartProducts={ cartProducts } 
                 setCart={ setCart } 
@@ -55,7 +54,7 @@ const App = () => {
                 display={ cartDisplay }
                 inventory={ inventory }
                 setInventory={ setInventory }/>
-            
+            z
             <Cart 
                 cartProducts={ cartProducts } 
                 setCart={ setCart } 
