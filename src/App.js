@@ -28,14 +28,22 @@ const App = () => {
     const [cartProducts, setCart] = useState({});
     const [cartDisplay, setCartDisplay] = useState('none');
     const [arrowDirection, setArrowDirection] = useState('<');
+    const [inventory, setInventory] = useState({});
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const response = await fetch('./data/products.json');
-            const json = await response.json();
-            setData(json);
+            const dataResponse = await fetch('./data/products.json');
+            const dataJson = await dataResponse.json();
+            setData(dataJson);
         };
         fetchProducts();
+
+        const fetchInventory = async () => {
+            const inventoryResponse = await fetch('./data/inventory.json');
+            const inventoryJson = await inventoryResponse.json();
+            setInventory(inventoryJson);
+        }        
+        fetchInventory();
     }, []);
 
     return (
@@ -44,7 +52,9 @@ const App = () => {
                 cartProducts={ cartProducts } 
                 setCart={ setCart } 
                 products={ products } 
-                display={ cartDisplay }/>
+                display={ cartDisplay }
+                inventory={ inventory }
+                setInventory={ setInventory }/>
             
             <Cart 
                 cartProducts={ cartProducts } 
@@ -52,7 +62,9 @@ const App = () => {
                 display={ cartDisplay } 
                 setDisplay={ setCartDisplay }
                 direction={ arrowDirection }
-                setDirection={ setArrowDirection }/>
+                setDirection={ setArrowDirection }
+                inventory={ inventory }
+                setInventory={ setInventory }/>
         </Container>
     );
 };

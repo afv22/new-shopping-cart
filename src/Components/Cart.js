@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import 'rbx/index.css';
-import { Container, Title, Button } from 'rbx';
+import { Container, Title, Button, Content } from 'rbx';
 import ReactDOM from 'react-dom'
 
 const Cart = ({ 
@@ -9,7 +9,9 @@ const Cart = ({
     display, 
     setDisplay, 
     direction, 
-    setDirection }) => {
+    setDirection,
+    inventory,
+    setInventory }) => {
 
     return (
         <Container className='cart'>
@@ -20,10 +22,14 @@ const Cart = ({
             <Container className='cart-wrap' style={{ 'display': display }}>
                 <Title className='title'>Cart</Title>
                 <br/>
-                <CartProductWrap 
-                    display={display} 
-                    cartProducts={cartProducts} 
-                    setCart={setCart} />
+                <Container id='cart-product-wrap'>
+                    <CartProductWrap 
+                        display={display} 
+                        cartProducts={cartProducts} 
+                        setCart={setCart}
+                        inventory={inventory}
+                        setInventory={setInventory} />
+                </Container>
             </Container>
         </Container>
     );
@@ -54,43 +60,76 @@ const Arrow = ({
 const CartProductWrap = ({ 
     cartProducts, 
     setCart, 
-    display }) => {
+    display,
+    inventory,
+    setInventory }) => {
+
+    console.log(cartProducts)
 
     return (
-        <Container id='cart-product-wrap'>
+        <Container>
             {Object.keys(cartProducts).map(product =>
-                <CartProduct key={cartProducts[product].product.sku} display={display} product={cartProducts[product]} cartProducts={cartProducts} setCart={setCart} />
+                <CartProduct 
+                    key={cartProducts[product].product.sku} 
+                    display={display} 
+                    product={cartProducts[product]} 
+                    cartProducts={cartProducts} 
+                    setCart={setCart}
+                    inventory={inventory}
+                    setInventory={setInventory} />
             )}
+            <br/>
+            <Content>Price: ${Object.keys(cartProducts).map(product => {
+                return cartProducts[product].product.price * cartProducts[product].count
+            }).reduce((a, b) => a + b, 0).toFixed(2)}</Content>
         </Container>
     );
 }
 
-const CartProduct = ({ product, cartProducts, setCart, display }) => {
+const CartProduct = ({ product, cartProducts, setCart, display, inventory, setInventory }) => {
+    
     const RemoveItem = () => {
-        if (!(String(product.product.sku) in cartProducts)) {
+        if (!(String(product.product.sku).concat('_', product.size) in cartProducts)) {
             return;
         }
-
+        
+        var currInventory = inventory;
         var currCart = cartProducts;
-        currCart[String(product.product.sku)].count -= 1;
-        if (currCart[String(product.product.sku)].count < 1) {
-            delete currCart[String(product.product.sku)];
+        currCart[String(product.product.sku).concat('_', product.size)].count -= 1;
+        if (currCart[String(product.product.sku).concat('_', product.size)].count < 1) {
+            delete currCart[String(product.product.sku).concat('_', product.size)];
         }
+        
+        currInventory[String(product.product.sku)][product.size] -= 1
+        
+        setInventory(currInventory);
         setCart(currCart);
-        CartRender({ cartProducts, setCart, display });
+        CartRender({ cartProducts, setCart, display, inventory, setInventory });
+
+        [].slice.call(document.getElementById(String(product.product.sku))
+            .getElementsByClassName('size'))
+            .find(element => { 
+                return element.value == product.size 
+            }).disabled = false;
     }
 
     return (
         <Container className='cart-product'>
             <br/>
             <Button className='cart-product-button' onClick={ RemoveItem }>X</Button>>
-            <Title className='cart-product-title' size={6}>{'Count: '.concat(product.count, ' - ', product.product.title, ' - ', product.product.currencyFormat, product.product.price)}</Title>
+            <Title className='cart-product-title' size={6}>{'Count: '.concat(product.count, ' - ', product.size, ' ', product.product.title, ' - ', product.product.currencyFormat, product.product.price)}</Title>
         </Container>
     );
 }
 
-const CartRender = ({ cartProducts, setCart, display }) => {
-    ReactDOM.render(<CartProductWrap cartProducts={ cartProducts } setCart={ setCart } display={ display }/>, document.getElementById('cart-product-wrap'))
+const CartRender = ({ cartProducts, setCart, display, inventory, setInventory }) => {
+    ReactDOM.render(<CartProductWrap 
+                        cartProducts={ cartProducts } 
+                        setCart={ setCart } 
+                        display={ display }
+                        inventory={ inventory }
+                        setInventory={ setInventory }/>, 
+                    document.getElementById('cart-product-wrap'))
 }
 
 export default Cart;
