@@ -3,11 +3,12 @@ import './App.css';
 import firebase from 'firebase/app';
 import 'firebase/database';
 import 'rbx/index.css';
-import { Container, Title } from 'rbx';
+import { Container, Title, Message, Button } from 'rbx';
 import ProductShelf from './Components/ProductShelf';
 import './Components/ProductShelf.css';
-import Cart from './Components/Cart';
+import Cart from './Components/Cart'; 
 import './Components/Cart.css';
+import UserBanner from './Components/UserBanner';
 
 const firebaseConfig = {
     apiKey: "AIzaSyD3HB4Nj8bbp5JaTxM0VyUee3o7L6u9oec",
@@ -29,6 +30,7 @@ const App = () => {
     const [cartDisplay, setCartDisplay] = useState('none');
     const [arrowDirection, setArrowDirection] = useState('<');
     const [inventory, setInventory] = useState({});
+    const [user, setUser] = useState(null);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -43,10 +45,16 @@ const App = () => {
         })
     }, []);
 
+    useEffect(() => {
+        firebase.auth().onAuthStateChanged(setUser);
+    }, []);
+
     return (
         <Container className='page-wrap'>
             <br/>
             <Title size={1}>SK8R BOI STYL</Title>
+            <UserBanner user={ user }/>
+
             <ProductShelf 
                 cartProducts={ cartProducts } 
                 setCart={ setCart } 
@@ -54,7 +62,7 @@ const App = () => {
                 display={ cartDisplay }
                 inventory={ inventory }
                 setInventory={ setInventory }/>
-            z
+            
             <Cart 
                 cartProducts={ cartProducts } 
                 setCart={ setCart } 

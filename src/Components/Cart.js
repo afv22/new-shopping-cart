@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import 'rbx/index.css';
 import { Container, Title, Button, Content } from 'rbx';
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom';
 
 const Cart = ({ 
     cartProducts, 
