@@ -3,7 +3,7 @@ import './App.css';
 import firebase from 'firebase/app';
 import 'firebase/database';
 import 'rbx/index.css';
-import { Container, Title, Message, Button } from 'rbx';
+import { Container, Title } from 'rbx';
 import ProductShelf from './Components/ProductShelf';
 import './Components/ProductShelf.css';
 import Cart from './Components/Cart'; 
@@ -61,7 +61,8 @@ const App = () => {
                 products={ products } 
                 display={ cartDisplay }
                 inventory={ inventory }
-                setInventory={ setInventory }/>
+                setInventory={ setInventory }
+                db={ db }/>
             
             <Cart 
                 cartProducts={ cartProducts } 
@@ -71,7 +72,8 @@ const App = () => {
                 direction={ arrowDirection }
                 setDirection={ setArrowDirection }
                 inventory={ inventory }
-                setInventory={ setInventory }/>
+                setInventory={ setInventory }
+                db={ db }/>
         </Container>
     );
 };

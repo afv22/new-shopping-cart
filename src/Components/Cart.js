@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import 'rbx/index.css';
 import { Container, Title, Button, Content } from 'rbx';
 import ReactDOM from 'react-dom';
@@ -11,7 +11,8 @@ const Cart = ({
     direction, 
     setDirection,
     inventory,
-    setInventory }) => {
+    setInventory,
+    db }) => {
 
     return (
         <Container className='cart'>
@@ -28,7 +29,8 @@ const Cart = ({
                         cartProducts={cartProducts} 
                         setCart={setCart}
                         inventory={inventory}
-                        setInventory={setInventory} />
+                        setInventory={setInventory}
+                        db={ db } />
                 </Container>
             </Container>
         </Container>
@@ -62,29 +64,38 @@ const CartProductWrap = ({
     setCart, 
     display,
     inventory,
-    setInventory }) => {
+    setInventory,
+    db }) => {
 
     return (
         <Container>
             {Object.keys(cartProducts).map(product =>
                 <CartProduct 
-                    key={cartProducts[product].product.sku} 
+                    key={String(cartProducts[product].product.sku).concat('_', cartProducts[product].size)} 
                     display={display} 
                     product={cartProducts[product]} 
                     cartProducts={cartProducts} 
                     setCart={setCart}
                     inventory={inventory}
-                    setInventory={setInventory} />
+                    setInventory={setInventory}
+                    db={ db } />
             )}
             <br/>
-            <Content>Price: ${Object.keys(cartProducts).map(product => {
+            <Content>Subtotal: ${Object.keys(cartProducts).map(product => {
                 return cartProducts[product].product.price * cartProducts[product].count
             }).reduce((a, b) => a + b, 0).toFixed(2)}</Content>
         </Container>
     );
 }
 
-const CartProduct = ({ product, cartProducts, setCart, display, inventory, setInventory }) => {
+const CartProduct = ({ 
+    product, 
+    cartProducts, 
+    setCart, 
+    display, 
+    inventory, 
+    setInventory,
+    db }) => {
     
     const RemoveItem = () => {
         if (!(String(product.product.sku).concat('_', product.size) in cartProducts)) {
@@ -98,16 +109,18 @@ const CartProduct = ({ product, cartProducts, setCart, display, inventory, setIn
             delete currCart[String(product.product.sku).concat('_', product.size)];
         }
         
-        currInventory[String(product.product.sku)][product.size] -= 1
+        currInventory[String(product.product.sku)][product.size] += 1
         
         setInventory(currInventory);
         setCart(currCart);
-        CartRender({ cartProducts, setCart, display, inventory, setInventory });
+        CartRender({ cartProducts, setCart, display, inventory, setInventory, db });
+
+        console.log(db.child(product.product.sku).child(product.size));
 
         [].slice.call(document.getElementById(String(product.product.sku))
             .getElementsByClassName('size'))
             .find(element => { 
-                return element.value == product.size 
+                return element.value === product.size
             }).disabled = false;
     }
 
@@ -120,13 +133,14 @@ const CartProduct = ({ product, cartProducts, setCart, display, inventory, setIn
     );
 }
 
-const CartRender = ({ cartProducts, setCart, display, inventory, setInventory }) => {
+const CartRender = ({ cartProducts, setCart, display, inventory, setInventory, db }) => {
     ReactDOM.render(<CartProductWrap 
                         cartProducts={ cartProducts } 
                         setCart={ setCart } 
                         display={ display }
                         inventory={ inventory }
-                        setInventory={ setInventory }/>, 
+                        setInventory={ setInventory }
+                        db={ db }/>, 
                     document.getElementById('cart-product-wrap'))
 }
 

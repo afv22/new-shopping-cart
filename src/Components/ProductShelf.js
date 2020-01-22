@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import 'rbx/index.css';
 import { Container, Title, Content, Button } from 'rbx';
-import ReactDOM from 'react-dom';
 import { CartRender } from './Cart';
 
-const ProductShelf = ({ products, cartProducts, setCart, display, inventory, setInventory }) => {
+const ProductShelf = ({ products, cartProducts, setCart, display, inventory, setInventory, db }) => {
     return (
         <Container className='product-shelf'>
             {products.map(product => 
@@ -15,7 +14,8 @@ const ProductShelf = ({ products, cartProducts, setCart, display, inventory, set
                     setCart={ setCart } 
                     display={ display }
                     inventory={ inventory }
-                    setInventory={ setInventory }/>
+                    setInventory={ setInventory }
+                    db={ db }/>
             )}
         </Container>
     );
@@ -27,7 +27,8 @@ const ProductCard = ({
     setCart, 
     display, 
     inventory, 
-    setInventory }) => {
+    setInventory,
+    db }) => {
 
     const sizes = ['S', 'M', 'L', 'XL'];
 
@@ -44,13 +45,15 @@ const ProductCard = ({
         
         setInventory(currInventory);
         setCart(currCart);
-        CartRender({ cartProducts, setCart, display, inventory, setInventory });
+        CartRender({ cartProducts, setCart, display, inventory, setInventory, db });
+        
+        
 
         if (inventory[String(product.sku)][size] < 1) {
             [].slice.call(document.getElementById(String(product.sku))
                 .getElementsByClassName('size'))
                 .find(element => { 
-                    return element.value == size 
+                    return element.value === size 
                 }).disabled = true;
         }
     }
