@@ -8,7 +8,6 @@ import ProductShelf from './Components/ProductShelf';
 import './Components/ProductShelf.css';
 import Cart from './Components/Cart'; 
 import './Components/Cart.css';
-import UserBanner from './Components/UserBanner';
 
 const firebaseConfig = {
     apiKey: "AIzaSyD3HB4Nj8bbp5JaTxM0VyUee3o7L6u9oec",
@@ -29,8 +28,6 @@ const App = () => {
     const [cartProducts, setCart] = useState({});
     const [cartDisplay, setCartDisplay] = useState('none');
     const [arrowDirection, setArrowDirection] = useState('<');
-    const [inventory, setInventory] = useState({});
-    const [user, setUser] = useState(null);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -39,30 +36,18 @@ const App = () => {
             setData(dataJson);
         };
         fetchProducts();
-
-        db.once('value').then( snap => {
-            setInventory(snap.val());
-        })
-    }, []);
-
-    useEffect(() => {
-        firebase.auth().onAuthStateChanged(setUser);
     }, []);
 
     return (
         <Container className='page-wrap'>
             <br/>
             <Title size={1}>SK8R BOI STYL</Title>
-            <UserBanner user={ user }/>
 
             <ProductShelf 
                 cartProducts={ cartProducts } 
                 setCart={ setCart } 
                 products={ products } 
-                display={ cartDisplay }
-                inventory={ inventory }
-                setInventory={ setInventory }
-                db={ db }/>
+                display={ cartDisplay } />
             
             <Cart 
                 cartProducts={ cartProducts } 
@@ -70,10 +55,7 @@ const App = () => {
                 display={ cartDisplay } 
                 setDisplay={ setCartDisplay }
                 direction={ arrowDirection }
-                setDirection={ setArrowDirection }
-                inventory={ inventory }
-                setInventory={ setInventory }
-                db={ db }/>
+                setDirection={ setArrowDirection } />
         </Container>
     );
 };

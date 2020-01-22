@@ -9,10 +9,7 @@ const Cart = ({
     display, 
     setDisplay, 
     direction, 
-    setDirection,
-    inventory,
-    setInventory,
-    db }) => {
+    setDirection }) => {
 
     return (
         <Container className='cart'>
@@ -27,10 +24,7 @@ const Cart = ({
                     <CartProductWrap 
                         display={display} 
                         cartProducts={cartProducts} 
-                        setCart={setCart}
-                        inventory={inventory}
-                        setInventory={setInventory}
-                        db={ db } />
+                        setCart={setCart} />
                 </Container>
             </Container>
         </Container>
@@ -62,10 +56,7 @@ const Arrow = ({
 const CartProductWrap = ({ 
     cartProducts, 
     setCart, 
-    display,
-    inventory,
-    setInventory,
-    db }) => {
+    display }) => {
 
     return (
         <Container>
@@ -75,15 +66,8 @@ const CartProductWrap = ({
                     display={display} 
                     product={cartProducts[product]} 
                     cartProducts={cartProducts} 
-                    setCart={setCart}
-                    inventory={inventory}
-                    setInventory={setInventory}
-                    db={ db } />
+                    setCart={setCart} />
             )}
-            <br/>
-            <Content>Subtotal: ${Object.keys(cartProducts).map(product => {
-                return cartProducts[product].product.price * cartProducts[product].count
-            }).reduce((a, b) => a + b, 0).toFixed(2)}</Content>
         </Container>
     );
 }
@@ -92,42 +76,11 @@ const CartProduct = ({
     product, 
     cartProducts, 
     setCart, 
-    display, 
-    inventory, 
-    setInventory,
-    db }) => {
-    
-    const RemoveItem = () => {
-        if (!(String(product.product.sku).concat('_', product.size) in cartProducts)) {
-            return;
-        }
-        
-        var currInventory = inventory;
-        var currCart = cartProducts;
-        currCart[String(product.product.sku).concat('_', product.size)].count -= 1;
-        if (currCart[String(product.product.sku).concat('_', product.size)].count < 1) {
-            delete currCart[String(product.product.sku).concat('_', product.size)];
-        }
-        
-        currInventory[String(product.product.sku)][product.size] += 1
-        
-        setInventory(currInventory);
-        setCart(currCart);
-        CartRender({ cartProducts, setCart, display, inventory, setInventory, db });
-
-        console.log(db.child(product.product.sku).child(product.size));
-
-        [].slice.call(document.getElementById(String(product.product.sku))
-            .getElementsByClassName('size'))
-            .find(element => { 
-                return element.value === product.size
-            }).disabled = false;
-    }
+    display }) => {
 
     return (
         <Container className='cart-product'>
             <br/>
-            <Button className='cart-product-button' onClick={ RemoveItem }>X</Button>>
             <Title className='cart-product-title' size={6}>{'Count: '.concat(product.count, ' - ', product.size, ' ', product.product.title, ' - ', product.product.currencyFormat, product.product.price)}</Title>
         </Container>
     );
@@ -137,10 +90,7 @@ const CartRender = ({ cartProducts, setCart, display, inventory, setInventory, d
     ReactDOM.render(<CartProductWrap 
                         cartProducts={ cartProducts } 
                         setCart={ setCart } 
-                        display={ display }
-                        inventory={ inventory }
-                        setInventory={ setInventory }
-                        db={ db }/>, 
+                        display={ display }/>, 
                     document.getElementById('cart-product-wrap'))
 }
 
