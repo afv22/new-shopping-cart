@@ -26,19 +26,6 @@ const ProductCard = ({
 
     const sizes = ['S', 'M', 'L', 'XL'];
 
-    const updateCart = (size) => {
-        var currCart = cartProducts;
-
-        if (String(product.sku).concat('_', size) in cartProducts) {
-            currCart[String(product.sku).concat('_', size)].count += 1;
-        } else {
-            currCart[String(product.sku).concat('_', size)] = {product: product, count: 1, size: size};
-        }
-        
-        setCart(currCart);
-        CartRender({ cartProducts, setCart, display });
-    }
-
     return (
         <Container className='product-card' id={String(product.sku)}>
             <img className='image' src={ 'data/products/'.concat(product.sku, '_1.jpg') } alt={product.title}/>
@@ -49,7 +36,6 @@ const ProductCard = ({
                 {sizes.map(size =>
                     <Button className='size' 
                         key={ String(product.sku).concat('_', size) } 
-                        onClick={ e => updateCart(e.target.value) } 
                         value={size}>{size}</Button>
                 )}
             </Button.Group>

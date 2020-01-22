@@ -73,10 +73,7 @@ const CartProductWrap = ({
 }
 
 const CartProduct = ({ 
-    product, 
-    cartProducts, 
-    setCart, 
-    display }) => {
+    product }) => {
 
     return (
         <Container className='cart-product'>
@@ -86,7 +83,7 @@ const CartProduct = ({
     );
 }
 
-const CartRender = ({ cartProducts, setCart, display, inventory, setInventory, db }) => {
+const CartRender = ({ cartProducts, setCart, display }) => {
     ReactDOM.render(<CartProductWrap 
                         cartProducts={ cartProducts } 
                         setCart={ setCart } 
